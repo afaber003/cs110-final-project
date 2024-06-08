@@ -59,7 +59,9 @@
   background: rgb(255, 255, 255);
   background-color: #003da5;
   width: 100%;
-  border: 1px solid rgb(218, 217, 217);
+  /*border: 1px solid rgb(218, 217, 217);*/
+  box-shadow: 0 0 10px rgba(0,0,0,0.9);
+  
   }
   
   .navbar .container {
@@ -382,11 +384,11 @@
   margin-right: 8px;
   }
   
-  .likes {
+  .likes, .dislikes, .commentCount {
   font-weight: 500;
   margin-top: 5px;
   font-size: 14px;
-  color: #4d4d4f;
+  color: #003da5;
   }
   
   .message {
@@ -406,11 +408,19 @@
   color: #1d92ff;
   }
   
-  .comments {
+  .postName { /*formally comments*/
   margin-top: 10px;
+  margin-bottom: 5px;
   font-weight: 400;
   /*color: #999;*/
   color: #003da5;
+  }
+
+  .viewComments {
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 400;
+    color: #999;
   }
   
   .addComments {
