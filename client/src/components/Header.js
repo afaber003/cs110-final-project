@@ -38,7 +38,8 @@ function Header({show}) {
               <li className="nav-item"><a href="#"><i className="far fa-heart"></i></a></li>
               <li className="nav-item">
                 <div style={{width: "fit-content", height: '40px', padding: '5px'}} className="action">
-                  <div style={{marginRight: '20px'}} className="profile" onClick={() => { /* navigate('profile') */
+                  <div style={{marginRight: '20px'}} className="profile" onClick={() => {
+                    window.location.href = 'http://localhost:3000/profile';
                   }}>
                     <img src="https://media.geeksforgeeks.org/wp-content/uploads/20220609093221/g2-200x200.jpg"
                          alt="user Avatar"/>
