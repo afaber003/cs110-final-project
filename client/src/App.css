@@ -80,8 +80,8 @@
   }
   
   .searchbar {
-  width: -10%;
-  text-align: end;
+    display: flex;
+    flex-direction: row;
   }
   
   .searchbar input {
@@ -92,12 +92,6 @@
   border: 1px solid rgb(218, 217, 217);
   border-radius: 2px;
   color: rgb(77, 77, 77);
-  }
-  
-  .searchbar img {
-  position: absolute;
-  margin-left: -10.5rem;
-  margin-top: 0.25rem;
   }
   
   .searchbar input::placeholder {
