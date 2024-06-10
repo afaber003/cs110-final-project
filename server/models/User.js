@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const {Schema} = require("mongoose");
 
+
+
 const userSchema = new Schema({
     userName: {
         required: true,
@@ -30,6 +32,11 @@ const userSchema = new Schema({
         type: String,
         required: true,
         default: 'user'
+    },
+    bio: {
+        type: String,
+        required: false,
+        default: ""
     }
 })
 

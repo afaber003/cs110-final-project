@@ -1,15 +1,15 @@
 const {dbUser} = require("../models/User");
 const {dbSession} = require("../models/Session");
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
+const {PermissionLevel} = require("../models/Classes");
 
-const SALT = 'thisisabadsalt'
 
 /**
  * Checks if user exists and if they meet the supplied permissionLevel
  * Handles its own errors
  * @param req {Request}
  * @param permissionLevel {PermissionLevel}
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 async function authenticateUser(req, permissionLevel) {
     try {
@@ -37,6 +37,7 @@ async function authenticateUser(req, permissionLevel) {
  * @returns {Promise<dbUser | null>}
  */
 async function createUser(userDetails) {
+    const newPass = bcrypt.hashSync(userDetails.password)
     try {
         const user = new dbUser({
             email: userDetails.email,
@@ -45,7 +46,7 @@ async function createUser(userDetails) {
             creationDate: Date.now(),
             permissionLevel: PermissionLevel.User,
             userName: userDetails.userName,
-            password: bcrypt.hashSync(userDetails.password, SALT)
+            password: newPass
         })
 
         await user.save()
@@ -70,13 +71,27 @@ async function createAndAttachSessionCookie(res, userId) {
     await newSession.save()
 
     // add session cookie to browser session
-    res.cookie('sessionId', newSession.id, {expires: new Date(253402300000000), httpOnly: true})
+    res.cookie('sessionId', newSession.id, {expires: new Date(253402300000000), httpOnly: false})
     return newSession.id
 }
 
+// Attempts to return user object from db based on req
+async function getUserFromReq(req) {
+    try {
+        return await dbUser.findOne(
+            {
+                _id: (await dbSession.findOne({_id: req.cookies['sessionId']})).userId
+            }
+        )
+    } catch (e) {
+        console.log(e)
+        return null
+    }
+}
+
 module.exports = {
+    getUserFromReq,
     createUser,
     createAndAttachSessionCookie,
-    SALT,
     authenticateUser
 }

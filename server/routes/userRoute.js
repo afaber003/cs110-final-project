@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const {dbUser} = require("../models/User");
 const {dbSession} = require("../models/Session");
-const {createUser, createAndAttachSessionCookie, authenticateUser} = require("../services/authService");
+const {createUser, createAndAttachSessionCookie, authenticateUser, getUserFromReq} = require("../services/authService");
+const {PermissionLevel} = require("../models/Classes");
 
 
 // Gets user information based on current logged-in user
@@ -14,12 +15,7 @@ router.get('/userDetails', async (req, res) => {
             return
         }
 
-        // This is ugly... should def create a helper func for this
-        const user = await dbUser.findOne(
-            {
-                _id: (await dbSession.findOne({_id: req.cookies['sessionId']})).userId
-            }
-        )
+        const user = await getUserFromReq(req)
         if (!user) {
             res.status(404).json({message: 'user not found'});
         }
@@ -102,6 +98,47 @@ router.post('/create', async (req, res) => {
 
         delete newUser.password
         res.status(200).json(newUser)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
+// Edit user
+const editableFields = ['lastName', 'firstName', 'userName', 'bio']
+router.patch('/edit', async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.User))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+
+        const user = await getUserFromReq(req)
+        for (let aspect of Object.entries(req.body)) {
+            if (editableFields.includes(aspect[0])) {
+                user[aspect[0]] = aspect[1]
+            }
+        }
+
+        if (req.body.password) {
+            user.password = bcrypt.hashSync(req.body.password)
+        }
+        await user.save()
+        delete user.password
+        res.status(200).json(user)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
+router.get('/cookieLogin', async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.User))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+        res.sendStatus(200)
     } catch (e) {
         console.log(e)
         res.status(500).json({message: e.message})

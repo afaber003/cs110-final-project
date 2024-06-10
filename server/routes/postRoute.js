@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const {dbPost} = require("../models/Post");
-const {authenticateUser} = require("../services/authService");
+const {authenticateUser, getUserFromReq} = require("../services/authService");
+const {PermissionLevel} = require("../models/Classes");
 
 // Gets all posts
 router.get('/', async (req, res) => {
@@ -51,6 +52,74 @@ router.post('/create', async (req, res) => {
         await newPost.save()
 
         res.sendStatus(201)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
+// Create a comment on a post
+router.post("/comment", async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.User))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+        const body = req.body
+        const user = await getUserFromReq(req)
+
+        if (!body.text) {
+            res.status(400).json({message: "missing text"})
+        }
+        if (!body.postId) {
+            res.status(400).json({message: "missing postId"})
+        }
+
+        const post = await dbPost.findOne({_id: body.postId})
+        if (!post) {
+            res.status(404).json({message: 'post not found'})
+        }
+
+        post.comments.push({
+            userId: user.id,
+            text: body.text
+        })
+
+        await post.save()
+        res.sendStatus(201)
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
+// toggles the given user's "like" on the post
+router.post("/like", async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.User))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+        const user = await getUserFromReq(req)
+        const body = req.body
+        if (!body.postId) {
+            res.status(400).json({message: "missing postId"})
+        }
+
+        const post = await dbPost.findOne({_id: body.postId})
+        if (!post) {
+            res.status(404).json({message: "post not found"})
+        }
+
+        const likeIndex = post.likes.indexOf(user.id)
+        if (likeIndex >= 0) {
+            post.likes.splice(likeIndex, 1)
+        } else {
+            post.likes.push(user.id)
+        }
+
+        await post.save()
+        res.status(200).json(post)
     } catch (e) {
         console.log(e)
         res.status(500).json({message: e.message})

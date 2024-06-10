@@ -365,9 +365,17 @@
   }
   
   .actionBtns {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .left {
+    width: 20%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
   }
   
   .actionBtns svg {
@@ -523,5 +531,52 @@
   
   .footer a:hover {
   color: #ff0000;
+  }
+
+  #loginBackground {
+    display: flex;
+    background-color: #98beff;
+    height: 100vh; /* You must set a specified height */
+    width: 100vw;
+  }
+
+  #loginBox {
+    background-color: rgba(255, 255, 255, 0.71);
+    border-radius: 15px;
+    height: 40%;
+    width: 50%;
+    margin: 15% auto auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  #loginBackground input {
+    margin-left: 10px;
+  }
+
+  .mainLogin {
+    margin: 10px 0 0 10px;
+  }
+
+  .loginButton {
+    margin-top: 15px;
+    width: 80px;
+    height: 30px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    border-color: gray;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+
+  .action {
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    background-color: white;
   }
   

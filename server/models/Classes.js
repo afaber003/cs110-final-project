@@ -8,7 +8,12 @@ const PermissionLevel = {
 // ideally this would be stored in a separate bucket rather than on the post object
 // but for this small of a project it doesnt really matter
 const Comment = {
-    owner: '', // User._id
+    userId: '', // User._id
     text: '', // comment text
     // should add replies and likes and stuff but that would add a lot of complexity to this lol
+}
+
+module.exports ={
+    PermissionLevel,
+    Comment
 }

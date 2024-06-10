@@ -4,15 +4,18 @@ const cookieParser = require('cookie-parser')
 const mongoose = require("mongoose");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 1234;
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use('/users', require('./routes/userRoute'))
-app.use('/postRoute', require('./routes/postRoute'))
+app.use('/posts', require('./routes/postRoute'))
 app.get('/test', (req, res) => {
     res.sendStatus(200)
 })
