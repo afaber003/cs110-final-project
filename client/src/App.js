@@ -5,6 +5,7 @@ import {BrowserRouter, Route, Routes, useNavigate} from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Base from "./pages/Base";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
                 <Route path="/" component={<Base/>}>
                     <Route path="login" element={<Login setShow={setShow} />}/>
                     <Route path='home' element={<Home setShow={setShow} />} />
+                    <Route path={'profile'} element={<Profile setShow={setShow} />} />
                 </Route>
             </Routes>
           </BrowserRouter>
