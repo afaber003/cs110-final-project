@@ -141,7 +141,7 @@ router.patch('/edit', async (req, res) => {
             user.password = bcrypt.hashSync(req.body.password)
         }
         if (req.body.permissionLevel && loggedInUser.permissionLevel === PermissionLevel.Admin) {
-            user.permissionlevel = req.body.permissionLevel
+            user.permissionLevel = req.body.permissionLevel
         }
         await user.save()
         delete user.password
@@ -218,6 +218,25 @@ router.post('/googleAccess', async (req, res) => {
             delete newUser.password
             res.status(200).json(newUser)
         }
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
+router.get('/allUserInfo', async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.Admin))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+
+        const allUsers = await dbUser.find({})
+        for (let user of allUsers) {
+            delete user.password
+        }
+
+        res.status(200).json(allUsers)
     } catch (e) {
         console.log(e)
         res.status(500).json({message: e.message})

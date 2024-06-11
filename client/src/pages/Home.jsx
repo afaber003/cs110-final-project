@@ -2,8 +2,10 @@ import Card from "../components/Card";
 import React, {useEffect} from "react";
 import {getUserDetails, httpCall} from "../services/networkService";
 import Modal from 'react-modal'
+import {useNavigate, useNavigation} from "react-router-dom";
 
 export default function Home({setShow, searchTerm}) {
+    const navigate = useNavigate()
 
     const [userDetails, setUserDetails] = React.useState({});
     const [posts, setPosts] = React.useState([]);
@@ -84,7 +86,7 @@ export default function Home({setShow, searchTerm}) {
             alert('Error Creating Post')
         }
         setShowModal(false)
-        loadPosts()
+        window.location.reload()
     }
 
     function adjustOtherProfileDetails(entry, value) {
@@ -254,9 +256,17 @@ export default function Home({setShow, searchTerm}) {
                 </Modal>
 
                 <div className="col-9">
-                    <button style={{marginBottom: '20px'}} className={'createPost shadow'} onClick={() => setShowModal(true)}>
-                        Create Post
-                    </button>
+                    <div style={{marginBottom: '20px'}}>
+                        <button className={'createPost shadow'} onClick={() => setShowModal(true)}>
+                            Create Post
+                        </button>
+                        {userDetails.permissionLevel === 'admin' &&
+                            <button style={{marginLeft: '30px'}} className={'createPost shadow'} onClick={() => navigate('/admin')}>
+                                Admin View
+                            </button>
+                        }
+                    </div>
+
                     {generateCards()}
                 </div>
             </div>

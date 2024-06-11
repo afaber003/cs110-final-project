@@ -6,6 +6,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Base from "./pages/Base";
 import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 function App() {
 
@@ -30,6 +31,7 @@ function App() {
                     <Route path="login" element={<Login setShow={setShow} />}/>
                     <Route path='home' element={<Home setShow={setShow} searchTerm={searchTerm} />} />
                     <Route path={'profile'} element={<Profile setShow={setShow} />} />
+                    <Route path={'admin'} element={<Admin setShow={setShow}/>}/>
                 </Route>
             </Routes>
           </BrowserRouter>

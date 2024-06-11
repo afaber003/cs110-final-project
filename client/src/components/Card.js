@@ -40,7 +40,7 @@ function Card({
         <div className="card">
             <div className="top">
                 <div className="userDetails">
-                    <h3 onClick={() => setOtherUserId(userId)}>{userName}</h3>
+                    <h3 className={'blueOnHover'} onClick={() => setOtherUserId(userId)}>{userName}</h3>
                 </div>
                 <div>
                     <span className="dot"><i className="fas fa-ellipsis-h"></i></span>
@@ -114,7 +114,7 @@ function Card({
                                         justifyContent: 'left',
                                         flexDirection: 'row'
                                     }}>
-                                        <b style={{marginRight: '10px'}} onClick={() => setOtherUserId(singleComment.userId)}>
+                                        <b style={{marginRight: '10px'}} className={'blueOnHover'} onClick={() => setOtherUserId(singleComment.userId)}>
                                             {singleComment.userName}:
                                         </b>
                                         <p>

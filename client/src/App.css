@@ -620,4 +620,33 @@
     width: 100%;
   }
 
+  .adminPanel {
+    margin: auto;
+    width: 80%;
+    max-height: 70%;
+    overflow-y: auto;
+    border: #FFFFFF solid 2px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    padding: 50px;
+  }
+
+  .adminUserListRow td {
+    padding: 5px;
+    justify-content: center;
+    text-align: center;
+    justify-self: center;
+    font-size: 1.1em;
+    margin: 10px 5px 10px 5px;
+  }
+
+  th {
+    justify-content: center;
+  }
+
+  .blueOnHover:hover {
+    color: #1d92ff;
+    cursor: pointer;
+  }
+
   
