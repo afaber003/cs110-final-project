@@ -32,7 +32,6 @@ export default function Login({setShow}) {
         }
     }
 
-
     return (
         <div style={{width: '100%'}} className="container">
             <div id={'loginBackground'}>
@@ -52,7 +51,5 @@ export default function Login({setShow}) {
                 </div>
             </div>
         </div>
-
-
     )
 }

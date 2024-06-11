@@ -1,58 +1,146 @@
-import Header from "../components/Header";
 import Card from "../components/Card";
 import React, {useEffect} from "react";
-import {getUserDetails} from "../services/networkService";
-
+import {getUserDetails, httpCall} from "../services/networkService";
+import Modal from 'react-modal'
 
 export default function Home({setShow}) {
 
     const [userDetails, setUserDetails] = React.useState({});
+    const [posts, setPosts] = React.useState([]);
+    const [loading, setLoading] = React.useState(false);
+    const [error, setError] = React.useState(false);
+    const [showModal, setShowModal] = React.useState(false);
+    const [newPostData, setNewPostData] = React.useState({
+        description: '',
+        imageUrl: '',
+    });
 
     useEffect(() => {
+        setLoading(true)
         setShow(true)
+        loadPosts()
+    }, []);
+
+    function loadPosts() {
         getUserDetails().then(userData => {
             if (userData) {
                 setUserDetails(userData)
+                getAllPosts().then(allPosts => {
+                    setPosts(allPosts)
+                })
+            } else {
+                setError(true)
             }
         })
-    }, []);
+    }
 
+    async function getAllPosts() {
+        const res = await httpCall('posts/', {})
+        return res ? res : []
+    }
+
+    async function handleCreatePost() {
+        const res = await httpCall('posts/create', newPostData, 'POST')
+        if (res) {
+            alert("Post Created")
+        } else {
+            alert('Error Creating Post')
+        }
+        setShowModal(false)
+        loadPosts()
+    }
+
+    function generateCards() {
+        const postRender = []
+        for (let post of posts) {
+            postRender.push(
+                <Card
+                    userName={userDetails.userName}
+                    postImg={post.imageUrl}
+                    likes={post.likes}
+                    userComment={post.description}
+                    comments={post.comments.length}
+                    postTime={(new Date(post.creationDate)).toLocaleString()}
+                    userData={userDetails}
+                    postId={post._id}
+                />
+            )
+        }
+        return postRender
+    }
 
     return (
             <div className="container">
-                <div className="col-9">
-                    <div className="statuses">
-                        {/* Status images */}
-                        <div className="status">
-                            <div className="image">
-                                <img src="https://media.geeksforgeeks.org/wp-content/uploads/20220604085434/GeeksForGeeks-300x243.png" alt="img3" />
-                            </div>
+                <Modal
+                    isOpen={showModal}
+                    onRequestClose={() => {setShowModal(false)}}
+                    shouldCloseOnOverlayClick={false}
+                    style={{
+                        content: {
+                            top: '50%',
+                            left: '50%',
+                            right: 'auto',
+                            bottom: 'auto',
+                            marginRight: '-50%',
+                            transform: 'translate(-50%, -50%)',
+                            backgroundColor: '#cbdcff',
+                            border: 'black solid 1px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                        },
+                        overlay: {
+                            background: "rgba(99,99,99,0.67)"
+                        }
+                    }}>
+                    <h2>Create Post</h2>
+                    <div id={'newPostModal'} style={{
+                        display: 'flex',
+                        justifyContent: 'left',
+                        flexDirection: 'column',
+                        height: 'fit-content'
+                    }}>
+                        <label>
+                            Image Link
+                            <input value={newPostData.imageUrl} onChange={event => {
+                                const data = {...newPostData}
+                                data.imageUrl = event.target.value
+                                setNewPostData(data)
+                            }}/>
+                        </label>
+                        <label>
+                            Description
+                            <textarea value={newPostData.description} onChange={(event) => {
+                                const data = {...newPostData}
+                                data.description = event.target.value
+                                setNewPostData(data)
+                            }}/>
+                        </label>
+                        <div style={{
+                            width: '100%',
+                            display: "flex",
+                            flexDirection: 'row',
+                            justifyContent: 'space-between'
+                        }}>
+                            <button style={{width: '30%', height: '30px'}} onClick={handleCreatePost}>
+                                Submit
+                            </button>
+                            <button style={{width: '30%', height: '30px'}} onClick={() => {
+                                setShowModal(false)
+                                setNewPostData({
+                                    description: '',
+                                    imageUrl: '',
+                                })
+                            }}>
+                                Cancel
+                            </button>
                         </div>
-                        {/* Add more status items here */}
                     </div>
-                    {/* Cards */}
-                    <Card
-                        profileImg="https://media.geeksforgeeks.org/wp-content/uploads/20220609093229/g-200x200.png"
-                        userName="normtheorange"
-                        /*location="Mumbai, India"*/
-                        postImg="https://media.geeksforgeeks.org/wp-content/uploads/20220609090112/gfg1-298x300.jpeg"
-                        likes="203"
-                        dislikes="12"
-                        /*userComment="Raju Modi"*/
-                        comments="32"
-                        postTime="2 hours ago"
-                    />
-                    <Card
-                        profileImg="https://media.geeksforgeeks.org/wp-content/uploads/20220609093241/g3-200x200.png"
-                        userName="scottybear"
-                        postImg="https://media.geeksforgeeks.org/wp-content/uploads/20220609090119/gfg2-300x297.jpeg"
-                        likes="420"
-                        dislikes="69"
-                        /*userComment="Piyush Agarwal"*/
-                        comments="20"
-                        postTime="4 hours ago"
-                    />
-                    {/* Add more cards here */}
+                </Modal>
+
+                <div className="col-9">
+                    <button style={{marginBottom: '20px'}} className={'createPost shadow'} onClick={() => setShowModal(true)}>
+                        Create Post
+                    </button>
+                    {generateCards()}
                 </div>
             </div>
     )
