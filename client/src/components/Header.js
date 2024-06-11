@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {logOutUser} from "../services/networkService";
 
-function Header({show}) {
+function Header({show, searchTerm, setSearchTerm}) {
 
   return (
     <header>
@@ -20,7 +20,7 @@ function Header({show}) {
                 show &&
                 (
                     <div style={{margin: '0 auto 0 auto', height: '30px'}} className="searchbar">
-                      <input type="text" placeholder="Search"/>
+                      <input value={searchTerm} type="text" placeholder="Search" onChange={(event) => setSearchTerm(event.target.value)}/>
                       <img style={{height: '26px', position: "absolute"}}
                            src="https://media.geeksforgeeks.org/wp-content/uploads/20220609093658/search-200x200.png"
                            alt="img2"/>

@@ -3,7 +3,7 @@ import React, {useEffect} from "react";
 import {getUserDetails, httpCall} from "../services/networkService";
 import Modal from 'react-modal'
 
-export default function Home({setShow}) {
+export default function Home({setShow, searchTerm}) {
 
     const [userDetails, setUserDetails] = React.useState({});
     const [posts, setPosts] = React.useState([]);
@@ -16,10 +16,9 @@ export default function Home({setShow}) {
     });
 
     useEffect(() => {
-        setLoading(true)
         setShow(true)
         loadPosts()
-    }, []);
+    }, [searchTerm]);
 
     function loadPosts() {
         getUserDetails().then(userData => {
@@ -35,7 +34,7 @@ export default function Home({setShow}) {
     }
 
     async function getAllPosts() {
-        const res = await httpCall('posts/', {})
+        const res = await httpCall('posts/', {searchTerm: searchTerm}, 'POST')
         return res ? res : []
     }
 
@@ -55,7 +54,7 @@ export default function Home({setShow}) {
         for (let post of posts) {
             postRender.push(
                 <Card
-                    userName={userDetails.userName}
+                    userName={post.userName}
                     postImg={post.imageUrl}
                     likes={post.likes}
                     userComment={post.description}

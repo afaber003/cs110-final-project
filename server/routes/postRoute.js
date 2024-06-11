@@ -5,18 +5,22 @@ const {authenticateUser, getUserFromReq} = require("../services/authService");
 const {PermissionLevel} = require("../models/Classes");
 
 // Gets all posts
-router.get('/', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         if (!(await authenticateUser(req, PermissionLevel.User))) {
             res.status(401).json({message: 'Not authorized'});
             return
         }
 
-        //
-        // Maybe add filters here? not sure if we're going to bother adding them
-        //
+        let posts = await dbPost.find({}).sort({creationDate: -1})
+        if (req.body.searchTerm && req.body.searchTerm !== '') {
+            posts = posts.filter(post => (
+                post.description.toLowerCase().includes(req.body.searchTerm.toLowerCase())
+                || post.userName.toLowerCase().includes(req.body.searchTerm.toLowerCase())
+            ))
+        }
 
-        res.status(200).json(await dbPost.find({}).sort({creationDate: -1}))
+        res.status(200).json(posts)
     } catch (e) {
         console.log(e)
         res.status(500).json({message: e.message})
@@ -44,6 +48,7 @@ router.post('/create', async (req, res) => {
         }
 
         const newPost = new dbPost({
+            userName: user.userName,
             owner: user._id,
             imageUrl: body.imageUrl,
             creationDate: Date.now(),

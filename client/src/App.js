@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 function App() {
 
     const [show, setShow] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('')
 
     // force redirect to login page if on random page
     useEffect(() => {
@@ -21,13 +22,13 @@ function App() {
 
   return (
     <div className="App">
-        <Header show={show} />
+        <Header show={show} setSearchTerm={setSearchTerm} searchTerm={searchTerm} />
         <main>
           <BrowserRouter>
             <Routes>
                 <Route path="/" component={<Base/>}>
                     <Route path="login" element={<Login setShow={setShow} />}/>
-                    <Route path='home' element={<Home setShow={setShow} />} />
+                    <Route path='home' element={<Home setShow={setShow} searchTerm={searchTerm} />} />
                     <Route path={'profile'} element={<Profile setShow={setShow} />} />
                 </Route>
             </Routes>

@@ -96,6 +96,8 @@ router.post('/create', async (req, res) => {
             return
         }
 
+        await createAndAttachSessionCookie(res, newUser._id)
+
         delete newUser.password
         res.status(200).json(newUser)
     } catch (e) {

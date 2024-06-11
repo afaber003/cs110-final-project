@@ -27,6 +27,10 @@ const postSchema = new Schema({
     description: {
         type: String,
         required: true
+    },
+    userName: {
+        type: String,
+        required: true
     }
 })
 
