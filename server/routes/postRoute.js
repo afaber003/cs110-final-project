@@ -81,6 +81,7 @@ router.post("/comment", async (req, res) => {
         }
 
         post.comments.push({
+            userName: user.userName,
             userId: user.id,
             text: body.text
         })

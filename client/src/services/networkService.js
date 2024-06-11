@@ -52,3 +52,12 @@ export async function logOutUser() {
     window.location.assign('http://localhost:3000/login')
 }
 
+export async function convertUserIdToUserName(userId) {
+    const response = await httpCall(`users/userNameFromId`, {userId: userId}, 'POST')
+    if (response) {
+        return response.userName
+    } else {
+        return userId
+    }
+}
+

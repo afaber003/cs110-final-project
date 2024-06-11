@@ -59,7 +59,7 @@ export default function Home({setShow}) {
                     postImg={post.imageUrl}
                     likes={post.likes}
                     userComment={post.description}
-                    comments={post.comments.length}
+                    comments={post.comments}
                     postTime={(new Date(post.creationDate)).toLocaleString()}
                     userData={userDetails}
                     postId={post._id}

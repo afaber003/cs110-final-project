@@ -145,4 +145,27 @@ router.get('/cookieLogin', async (req, res) => {
     }
 })
 
+router.post('/userNameFromId', async (req, res) => {
+    try {
+        if (!(await authenticateUser(req, PermissionLevel.User))) {
+            res.status(401).json({message: 'Not authorized'});
+            return
+        }
+
+        const body = req.body
+        if (!body.userId) {
+            res.status(400).json({message: 'missing userId'})
+        }
+        const userToFind = await dbUser.findOne({_id: body.userId})
+        if (!userToFind) {
+            res.status(404).json({message: 'user not found'})
+            return
+        }
+        res.status(200).json({userName: userToFind.userName})
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
 module.exports = router;
