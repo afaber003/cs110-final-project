@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {httpCall, logInUser} from "../services/networkService";
 import {useNavigate} from "react-router-dom";
+import GoogleSignIn from "../components/GoogleSignIn";
 
 
 export default function Login({setShow}) {
@@ -84,6 +85,7 @@ export default function Login({setShow}) {
                                 <button className={'loginButton'} onClick={handleSubmit}>
                                     Login
                                 </button>
+                                <GoogleSignIn/>
                             </div>
                         </>
                     }

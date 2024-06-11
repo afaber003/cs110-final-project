@@ -170,4 +170,40 @@ router.post('/userNameFromId', async (req, res) => {
     }
 })
 
+router.post('/googleAccess', async (req, res) => {
+    try {
+        const body = req.body;
+        const existingUser = await dbUser.findOne({email: body.email})
+        if (existingUser) {
+            await dbSession.deleteMany({userId: existingUser.id}) // make sure to delete any existing sessions (this logs out any other instances)
+            await createAndAttachSessionCookie(res, existingUser.id)
+            delete existingUser.password // remove password to avoid sending the hash to the client side lol
+            res.status(200).json(existingUser)
+        } else {
+            if (!body.userName || !body.password) {
+                res.status(400).json({message: 'missing username or password'})
+                return
+            }
+            if (!body.firstName) {
+                res.status(400).json({message: 'missing firstName'})
+                return
+            }
+
+            const newUser = await createUser(body)
+            if (!newUser) {
+                res.status(500).json({message: 'there was an issue creating your account'})
+                return
+            }
+
+            await createAndAttachSessionCookie(res, newUser._id)
+
+            delete newUser.password
+            res.status(200).json(newUser)
+        }
+    } catch (e) {
+        console.log(e)
+        res.status(500).json({message: e.message})
+    }
+})
+
 module.exports = router;
