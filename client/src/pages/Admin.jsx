@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {getUserDetails, httpCall} from "../services/networkService";
 
 
-export default function Admin({setShow}) {
+export default function Admin({setShow, searchTerm}) {
 
     const [userData, setUserData] = useState({})
     const [allUserData, setAllUserData] = useState([])
@@ -35,22 +35,24 @@ export default function Admin({setShow}) {
     function generateUsersList() {
         const list = []
         for (const user of allUserData) {
-            list.push(
-                <tr className={'adminUserListRow'}>
-                    <td>{user.userName}</td>
-                    <td>{user.firstName + ' ' + user.lastName}</td>
-                    <td>{user.email}</td>
-                    <td>{(new Date(user.creationDate)).toLocaleString()}</td>
-                    <td>{user.bio.slice(0, 25) + (user.bio.length > 25 ? '...' : '')}</td>
-                    <td>
-                        <input
-                            type={'checkbox'}
-                            checked={user.permissionLevel === 'admin'}
-                            onChange={() => toggleUserPermission(user._id)}
-                        />
-                    </td>
-                </tr>
-            )
+            if (searchTerm === '' || user.userName.toLowerCase().includes(searchTerm.toLowerCase()) || user.email.toLowerCase().includes(searchTerm.toLowerCase()) || user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) || user.lastName.toLowerCase().includes(searchTerm.toLowerCase())) {
+                list.push(
+                    <tr className={'adminUserListRow'}>
+                        <td>{user.userName}</td>
+                        <td>{user.firstName + ' ' + user.lastName}</td>
+                        <td>{user.email}</td>
+                        <td>{(new Date(user.creationDate)).toLocaleString()}</td>
+                        <td>{user.bio.slice(0, 25) + (user.bio.length > 25 ? '...' : '')}</td>
+                        <td>
+                            <input
+                                type={'checkbox'}
+                                checked={user.permissionLevel === 'admin'}
+                                onChange={() => toggleUserPermission(user._id)}
+                            />
+                        </td>
+                    </tr>
+                )
+            }
         }
         return list
     }

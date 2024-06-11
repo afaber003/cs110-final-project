@@ -31,7 +31,7 @@ function App() {
                     <Route path="login" element={<Login setShow={setShow} />}/>
                     <Route path='home' element={<Home setShow={setShow} searchTerm={searchTerm} />} />
                     <Route path={'profile'} element={<Profile setShow={setShow} />} />
-                    <Route path={'admin'} element={<Admin setShow={setShow}/>}/>
+                    <Route path={'admin'} element={<Admin setShow={setShow} searchTerm={searchTerm}/>}/>
                 </Route>
             </Routes>
           </BrowserRouter>
