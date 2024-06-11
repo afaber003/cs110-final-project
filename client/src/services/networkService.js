@@ -44,7 +44,7 @@ export async function logInUser(userName, password) {
 }
 
 export async function getUserDetails() {
-    return await httpCall('users/userDetails', {})
+    return await httpCall('users/userDetails', {}, 'POST')
 }
 
 export async function logOutUser() {

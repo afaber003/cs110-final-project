@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import {convertUserIdToUserName, httpCall} from "../services/networkService";
 
-// This should be refactored to just take a post object
+// This should be refactored to just take a Post object
 function Card({
                   userName,
+                  userId,
                   postImg,
                   likes,
                   userComment,
                   comments,
                   postTime,
                   postId,
-                  userData
+                  userData,
+                  setOtherUserId
               }) {
     const [hasLiked, setHasLiked] = useState(likes.includes(userData._id))
     const [showComments, setShowComments] = useState(false)
@@ -38,7 +40,7 @@ function Card({
         <div className="card">
             <div className="top">
                 <div className="userDetails">
-                    <h3>{userName}</h3>
+                    <h3 onClick={() => setOtherUserId(userId)}>{userName}</h3>
                 </div>
                 <div>
                     <span className="dot"><i className="fas fa-ellipsis-h"></i></span>
@@ -112,7 +114,7 @@ function Card({
                                         justifyContent: 'left',
                                         flexDirection: 'row'
                                     }}>
-                                        <b style={{marginRight: '10px'}}>
+                                        <b style={{marginRight: '10px'}} onClick={() => setOtherUserId(singleComment.userId)}>
                                             {singleComment.userName}:
                                         </b>
                                         <p>

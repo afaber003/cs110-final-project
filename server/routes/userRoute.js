@@ -8,14 +8,20 @@ const {PermissionLevel} = require("../models/Classes");
 
 
 // Gets user information based on current logged-in user
-router.get('/userDetails', async (req, res) => {
+router.post('/userDetails', async (req, res) => {
     try {
         if (!(await authenticateUser(req, PermissionLevel.User))) {
             res.status(401).json({message: 'Not authorized'});
             return
         }
 
-        const user = await getUserFromReq(req)
+        let user;
+        if (req.body.userId) {
+            user = await dbUser.findOne({_id: req.body.userId})
+        } else {
+            user = await getUserFromReq(req)
+        }
+
         if (!user) {
             res.status(404).json({message: 'user not found'});
         }
@@ -115,7 +121,16 @@ router.patch('/edit', async (req, res) => {
             return
         }
 
-        const user = await getUserFromReq(req)
+        const loggedInUser = await getUserFromReq(req)
+        let user
+
+        // Allow admin to edit other users
+        if (loggedInUser.permissionLevel === PermissionLevel.Admin && req.body.userId) {
+            user = await dbUser.findOne({_id: req.body.userId})
+        } else {
+            user = loggedInUser
+        }
+
         for (let aspect of Object.entries(req.body)) {
             if (editableFields.includes(aspect[0])) {
                 user[aspect[0]] = aspect[1]
@@ -124,6 +139,9 @@ router.patch('/edit', async (req, res) => {
 
         if (req.body.password) {
             user.password = bcrypt.hashSync(req.body.password)
+        }
+        if (req.body.permissionLevel && loggedInUser.permissionLevel === PermissionLevel.Admin) {
+            user.permissionlevel = req.body.permissionLevel
         }
         await user.save()
         delete user.password

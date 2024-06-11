@@ -78,7 +78,7 @@ export default function Login({setShow}) {
                                 <input type={'password'} value={password}
                                        onChange={event => setPassword(event.target.value)}/>
                             </label>
-                            <div style={{display: 'flex', justifyContent: 'space-between', width: '60%'}}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', width: '50%'}}>
                                 <button className={'loginButton'} onClick={() => setIsSignUp(true)}>
                                     Sign Up
                                 </button>
