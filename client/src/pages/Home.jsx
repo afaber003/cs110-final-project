@@ -7,8 +7,6 @@ export default function Home({setShow, searchTerm}) {
 
     const [userDetails, setUserDetails] = React.useState({});
     const [posts, setPosts] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
-    const [error, setError] = React.useState(false);
     const [showModal, setShowModal] = React.useState(false);
     const [newPostData, setNewPostData] = React.useState({
         description: '',
@@ -27,8 +25,6 @@ export default function Home({setShow, searchTerm}) {
                 getAllPosts().then(allPosts => {
                     setPosts(allPosts)
                 })
-            } else {
-                setError(true)
             }
         })
     }
